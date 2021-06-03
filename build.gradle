@@ -1,20 +1,66 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version '2.5.0' apply(false)
+// buildscript : gradle 빌드 스크립트 자체를 위한 의존성이나 변수 Task, Plugin 을 지정할 수 있다.
+buildscript {
+    ext {
+        springBootVersion = '2.5.0'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+    }
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
+// allprojects : 모든 프로젝트 공통
+allprojects {
 }
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+// subprojects : 하위 프로젝트 공통
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    ext {
+        set('springCloudVersion', "2020.0.3")
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.assertj:assertj-core:3.19.0'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-test {
-    useJUnitPlatform()
+//개별프로젝트에 공통프로젝트 의존성 주입
+project('application:spring-boot-order-application') {
+    dependencies {
+        implementation(project(':common:system-core'))
+    }
+}
+
+//개별프로젝트에 공통프로젝트 의존성 주입
+project('application:spring-boot-stock-application') {
+    dependencies {
+        implementation(project(':common:system-core'))
+    }
 }
