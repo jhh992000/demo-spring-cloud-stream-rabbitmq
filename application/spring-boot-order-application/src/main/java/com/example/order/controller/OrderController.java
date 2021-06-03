@@ -19,7 +19,7 @@ public class OrderController {
     @GetMapping("/order")
     public String order(Order order) throws Exception {
 
-        order.setOrderId(orderCount++);
+        order.setOrderId(++orderCount);
 
         if (CommonUtils.isNull(order.getProductId())) {
             return "Please enter product id. [ parameter : productId ]";
