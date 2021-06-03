@@ -1,4 +1,4 @@
-package com.example.common.app.controller;
+package com.example.common.controller;
 
 import com.example.core.util.CommonUtils;
 import org.springframework.web.bind.annotation.GetMapping;
