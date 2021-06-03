@@ -29,7 +29,7 @@ public class OrderController {
         System.out.println("send message : " + message);
 
         //rabbitmq로 메세지 전송
-        template.convertAndSend("input-in-0.someGroup", message);
+        template.convertAndSend("myOrder-in-0.myOrderGroup", message);
 
         return "Order Complete : " + message;
     }
