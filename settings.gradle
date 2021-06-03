@@ -1,6 +1,5 @@
 rootProject.name = 'demo-spring-cloud-stream-rabbitmq'
 
-include('application:spring-boot-common-super-application')
 include('application:spring-boot-order-application')
 include('application:spring-boot-stock-application')
 
