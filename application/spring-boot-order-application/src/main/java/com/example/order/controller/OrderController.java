@@ -1,6 +1,8 @@
 package com.example.order.controller;
 
 import com.example.core.util.CommonUtils;
+import com.example.order.domain.Order;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +14,24 @@ public class OrderController {
     @Autowired
     private RabbitTemplate template;
 
+    private long orderCount = 0L;
+
     @GetMapping("/order")
-    public String order(String productName) {
-        if (CommonUtils.isNull(productName)) {
-            return "Please enter product name. [ parameter : productName ]";
+    public String order(Order order) throws Exception {
+
+        order.setOrderId(orderCount++);
+
+        if (CommonUtils.isNull(order.getProductId())) {
+            return "Please enter product id. [ parameter : productId ]";
         }
 
-        //rabbitmq로 데이터 전송
-        template.convertAndSend("input-in-0.someGroup", "{\"productName\":\"" + productName + "\"}");
+        String message = new ObjectMapper().writeValueAsString(order);
+        System.out.println("send message : " + message);
 
-        return "Order Complete : " + productName;
+        //rabbitmq로 메세지 전송
+        template.convertAndSend("input-in-0.someGroup", message);
+
+        return "Order Complete : " + message;
     }
 
 }
