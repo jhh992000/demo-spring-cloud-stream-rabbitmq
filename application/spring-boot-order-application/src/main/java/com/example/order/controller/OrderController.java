@@ -26,7 +26,7 @@ public class OrderController {
         }
 
         String message = new ObjectMapper().writeValueAsString(order);
-        System.out.println("send message : " + message);
+        System.out.println("주문요청 : " + message);
 
         //rabbitmq로 메세지 전송
         template.convertAndSend("myOrder-in-0.myOrderGroup", message);
